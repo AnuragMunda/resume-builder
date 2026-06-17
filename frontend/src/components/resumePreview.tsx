@@ -680,7 +680,7 @@ const ResumePreview = ({ templateId }: ResumePreviewProps) => {
   return (
     <div
       ref={containerRef}
-      className="mx-auto w-full overflow-hidden"
+      className="mx-auto w-full overflow-hidden border border-black"
       style={{ height: previewHeightPx * scale }}
     >
       <div
