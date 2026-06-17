@@ -55,17 +55,23 @@ const Edit = () => {
         </Button>
       </div>
       <Tabs defaultValue="edit" className="px-5 flex items-center">
-        <TabsList className="w-full min-h-10 md:max-w-[20%]">
-          <TabsTrigger className="md:text-md cursor-pointer" value="edit">
+        <TabsList className="w-full min-h-10 md:max-w-[20%] bg-neutral-800">
+          <TabsTrigger
+            className="md:text-md cursor-pointer text-white md:hover:text-neutral-400"
+            value="edit"
+          >
             Edit
           </TabsTrigger>
           {isSmallerDevice ? (
-            <TabsTrigger value="preview" className="cursor-pointer">
+            <TabsTrigger
+              value="preview"
+              className="cursor-pointer text-white md:hover:text-neutral-400"
+            >
               Preview
             </TabsTrigger>
           ) : (
             <TabsTrigger
-              className="md:text-md cursor-pointer"
+              className="md:text-md cursor-pointer text-white md:hover:text-neutral-400"
               value="customise"
             >
               Customise
@@ -76,9 +82,11 @@ const Edit = () => {
           <Editor />
         </TabsContent>
         {isSmallerDevice ? (
-          <TabsContent value="preview" className="w-full">
-            {templateId && <ResumePreview templateId={templateId} />}
-            <div className="mt-4 flex justify-center">
+          <TabsContent value="preview" className="w-full flex flex-col h-full">
+            <div className="flex-1 overflow-auto pb-16">
+              {templateId && <ResumePreview templateId={templateId} />}
+            </div>
+            <div className="sticky bottom-0 flex justify-center border-t bg-background/80 backdrop-blur-sm p-4">
               <Button
                 variant="outline"
                 size="sm"

@@ -4,13 +4,12 @@ import {
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "../ui/input";
 
 import { Button } from "../ui/button";
-import { useLevelStore, useResumeStore } from "@/hooks/store";
+import { useResumeStore } from "@/hooks/store";
 import { debounce } from "@/utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import { Skill } from "@/utils/types";
@@ -19,7 +18,6 @@ import { Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
 const Skills = () => {
-  const setCurrentLevel = useLevelStore((state) => state.setCurrentLevel);
   const { skills, setSkills } = useResumeStore();
   const [localSkills, setLocalSkills] = useState<Skill[]>([
     {
@@ -103,25 +101,6 @@ const Skills = () => {
             </Button>
           </div>
         </FieldSet>
-        <FieldSeparator />
-        <Field orientation="horizontal" className="w-full flex justify-between">
-          <Button
-            size="lg"
-            variant="outline"
-            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
-            onClick={() => setCurrentLevel("work")}
-          >
-            Back
-          </Button>
-          <Button
-            type="button"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
-            size="lg"
-            onClick={() => setCurrentLevel("education")}
-          >
-            Next: Education History
-          </Button>
-        </Field>
       </FieldGroup>
     </div>
   );

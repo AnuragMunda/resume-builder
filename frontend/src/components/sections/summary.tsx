@@ -3,18 +3,15 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
 
-import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { useLevelStore, useResumeStore } from "@/hooks/store";
+import { useResumeStore } from "@/hooks/store";
 import { debounce } from "@/utils/helper";
 import { useCallback, useEffect, useState } from "react";
 
 const Summary = () => {
-  const setCurrentLevel = useLevelStore((state) => state.setCurrentLevel);
   const { summary, setSummary } = useResumeStore();
   const [localSummary, setLocalSummary] = useState<string>(summary);
 
@@ -55,25 +52,6 @@ const Summary = () => {
             </Field>
           </FieldGroup>
         </FieldSet>
-        <FieldSeparator />
-        <Field orientation="horizontal" className="w-full flex justify-between">
-          <Button
-            size="lg"
-            variant="outline"
-            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
-            onClick={() => setCurrentLevel("info")}
-          >
-            Back
-          </Button>
-          <Button
-            type="button"
-            size="lg"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
-            onClick={() => setCurrentLevel("work")}
-          >
-            Next: Work Experience
-          </Button>
-        </Field>
       </FieldGroup>
     </div>
   );

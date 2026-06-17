@@ -4,19 +4,16 @@ import {
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "../ui/input";
 
-import { Button } from "../ui/button";
-import { useLevelStore, useResumeStore } from "@/hooks/store";
+import { useResumeStore } from "@/hooks/store";
 import { camelToNormal, debounce } from "@/utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import { PersonalDetails } from "@/utils/types";
 
 const PersonalInfo = () => {
-  const setCurrentLevel = useLevelStore((state) => state.setCurrentLevel);
   const { personalDetails, setPersonalDetails } = useResumeStore();
   const [localDetails, setLocalDetails] =
     useState<PersonalDetails>(personalDetails);
@@ -80,17 +77,6 @@ const PersonalInfo = () => {
             )}
           </FieldGroup>
         </FieldSet>
-        <FieldSeparator />
-        <Field orientation="horizontal" className="w-full flex justify-end">
-          <Button
-            type="button"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer "
-            size="lg"
-            onClick={() => setCurrentLevel("summary")}
-          >
-            Next: Professional Summary
-          </Button>
-        </Field>
       </FieldGroup>
     </div>
   );

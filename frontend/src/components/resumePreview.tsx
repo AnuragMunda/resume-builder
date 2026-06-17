@@ -678,8 +678,11 @@ const ResumePreview = ({ templateId }: ResumePreviewProps) => {
   const previewHeightPx = (PREVIEW_HEIGHT_MM / 25.4) * 96;
 
   return (
-    <div ref={containerRef} className="mx-auto w-full overflow-hidden">
-      {/* Scale wrapper – scales preview uniformly on small screens */}
+    <div
+      ref={containerRef}
+      className="mx-auto w-full overflow-hidden"
+      style={{ height: previewHeightPx * scale }}
+    >
       <div
         className="origin-top-left"
         style={{
@@ -701,8 +704,6 @@ const ResumePreview = ({ templateId }: ResumePreviewProps) => {
           </div>
         </div>
       </div>
-      {/* Spacer so parent layout accounts for scaled height */}
-      <div style={{ height: previewHeightPx * scale }} />
     </div>
   );
 };

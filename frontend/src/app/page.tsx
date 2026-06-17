@@ -28,11 +28,17 @@ export default function Home() {
       </div>
 
       <Tabs defaultValue="templates" className="w-full max-w-3xl">
-        <TabsList className="mb-8 w-full">
-          <TabsTrigger value="templates" className="flex-1 cursor-pointer">
+        <TabsList className="w-full min-h-10 mb-8 bg-neutral-800">
+          <TabsTrigger
+            value="templates"
+            className="flex-1 md:text-md cursor-pointer text-white md:hover:text-neutral-400"
+          >
             Templates
           </TabsTrigger>
-          <TabsTrigger value="recent" className="flex-1 cursor-pointer">
+          <TabsTrigger
+            value="recent"
+            className="flex-1 md:text-md cursor-pointer text-white md:hover:text-neutral-400"
+          >
             Recent Work
           </TabsTrigger>
         </TabsList>

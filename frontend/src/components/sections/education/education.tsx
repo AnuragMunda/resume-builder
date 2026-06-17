@@ -4,17 +4,14 @@ import {
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
 
-import { Button } from "../../ui/button";
-import { useLevelStore, useResumeStore } from "@/hooks/store";
+import { useResumeStore } from "@/hooks/store";
 import InputSheet from "./eduInputSheet";
 import EducationCard from "./educationCard";
 
-const Experience = () => {
-  const setCurrentLevel = useLevelStore((state) => state.setCurrentLevel);
+const Education = () => {
   const { educationHistory, setOpenSheet, openSheet } = useResumeStore();
 
   return (
@@ -45,28 +42,9 @@ const Experience = () => {
             </Field>
           </FieldGroup>
         </FieldSet>
-        <FieldSeparator />
-        <Field orientation="horizontal" className="w-full flex justify-between">
-          <Button
-            size="lg"
-            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
-            variant="outline"
-            onClick={() => setCurrentLevel("skills")}
-          >
-            Back
-          </Button>
-          {/* <Button
-            type="button"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
-            size="lg"
-            // onClick={() => setCurrentLevel("skills")}
-          >
-            Done
-          </Button> */}
-        </Field>
       </FieldGroup>
     </div>
   );
 };
 
-export default Experience;
+export default Education;
