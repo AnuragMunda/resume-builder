@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Editor from "@/components/editor/editor";
 import ResumePreview from "@/components/resumePreview";
 import TemplateSelector from "@/components/templateSelector";
+import ExportPdfButton from "@/components/exportPdfButton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -25,6 +26,10 @@ const Edit = () => {
   const templateId = useResumeStore((state) => state.templateId);
   const isSmallerDevice = useMediaQuery("(max-width: 1023px)");
   const [showCustomiseSheet, setShowCustomiseSheet] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>(
+    isSmallerDevice ? "preview" : "edit",
+  );
+  const previewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (resumeId) {
@@ -43,18 +48,27 @@ const Edit = () => {
 
   return (
     <section>
-      <div className="px-5 pt-5">
+      <div className="flex items-center px-5 pt-5">
         <Button
           variant="ghost"
-          size="sm"
+          size="lg"
           onClick={() => router.push("/")}
-          className="gap-1.5 cursor-pointer"
+          className="gap-1.5 cursor-pointer mb-2 md:mb-0"
         >
           <ArrowLeft className="size-4" />
-          Back
+          Home
         </Button>
+        {!isSmallerDevice && (
+          <div className="ml-auto">
+            <ExportPdfButton previewRef={previewRef} />
+          </div>
+        )}
       </div>
-      <Tabs defaultValue="edit" className="px-5 flex items-center">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="px-5 flex items-center"
+      >
         <TabsList className="w-full min-h-10 md:max-w-[20%] bg-neutral-800">
           <TabsTrigger
             className="md:text-md cursor-pointer text-white md:hover:text-neutral-400"
@@ -84,18 +98,21 @@ const Edit = () => {
         {isSmallerDevice ? (
           <TabsContent value="preview" className="w-full flex flex-col h-full">
             <div className="flex-1 overflow-auto pb-16">
-              {templateId && <ResumePreview templateId={templateId} />}
+              {templateId && (
+                <ResumePreview ref={previewRef} templateId={templateId} />
+              )}
             </div>
-            <div className="sticky bottom-0 flex justify-center border-t bg-background/80 backdrop-blur-sm p-4">
+            <div className="sticky bottom-0 flex items-center justify-center gap-3 border-t bg-background/80 backdrop-blur-sm p-4">
               <Button
                 variant="outline"
-                size="sm"
+                size="lg"
                 className="gap-2 cursor-pointer"
                 onClick={() => setShowCustomiseSheet(true)}
               >
                 <Palette className="size-4" />
                 Customise Template
               </Button>
+              <ExportPdfButton previewRef={previewRef} variant="icon" />
             </div>
             <Sheet
               open={showCustomiseSheet}
@@ -112,13 +129,15 @@ const Edit = () => {
             </Sheet>
           </TabsContent>
         ) : (
-          <TabsContent value="customise" className="w-full">
+          <TabsContent value="customise" className="w-full" forceMount>
             <div className="flex h-full gap-6">
               <div className="w-[50%] p-8 overflow-auto">
                 <TemplateSelector variant="grid" />
               </div>
               <div className="flex-1 overflow-auto">
-                {templateId && <ResumePreview templateId={templateId} />}
+                {templateId && (
+                  <ResumePreview ref={previewRef} templateId={templateId} />
+                )}
               </div>
             </div>
           </TabsContent>

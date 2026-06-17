@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useResumeStore } from "@/hooks/store";
 import { RESUME_TEMPLATES } from "@/utils/templates";
 import {
@@ -228,7 +228,7 @@ const SidebarLayout = ({
   const hasName = personalDetails.firstName || personalDetails.lastName || personalDetails.jobTarget;
 
   return (
-    <div className={`flex min-h-[${PREVIEW_HEIGHT_MM}mm]`} style={{ fontFamily: styles.bodyFont }}>
+    <div className={`flex min-h-full`} style={{ fontFamily: styles.bodyFont }}>
       {/* Sidebar - background always visible */}
       <div
         className="flex min-h-full min-w-[30%] flex-col p-4 text-white"
@@ -635,77 +635,84 @@ const BannerLayout = ({
 const PREVIEW_WIDTH_MM = 210;
 const PREVIEW_HEIGHT_MM = 297;
 
-const ResumePreview = ({ templateId }: ResumePreviewProps) => {
-  const template = RESUME_TEMPLATES.find((t) => t.id === templateId);
-  const personalDetails = useResumeStore((s) => s.personalDetails);
-  const summary = useResumeStore((s) => s.summary);
-  const workExperience = useResumeStore((s) => s.workExperience);
-  const educationHistory = useResumeStore((s) => s.educationHistory);
-  const skills = useResumeStore((s) => s.skills);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
+const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
+  ({ templateId }, ref) => {
+    const template = RESUME_TEMPLATES.find((t) => t.id === templateId);
+    const personalDetails = useResumeStore((s) => s.personalDetails);
+    const summary = useResumeStore((s) => s.summary);
+    const workExperience = useResumeStore((s) => s.workExperience);
+    const educationHistory = useResumeStore((s) => s.educationHistory);
+    const skills = useResumeStore((s) => s.skills);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const exportRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    useImperativeHandle(ref, () => containerRef.current!);
 
-    const updateScale = () => {
-      const containerWidth = el.clientWidth;
-      const previewWidthPx = (PREVIEW_WIDTH_MM / 25.4) * 96; // mm to px at 96dpi
-      const newScale = Math.min(1, containerWidth / previewWidthPx);
-      setScale(newScale);
+    useEffect(() => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      const updateScale = () => {
+        const containerWidth = el.clientWidth;
+        const previewWidthPx = (PREVIEW_WIDTH_MM / 25.4) * 96;
+        const newScale = Math.min(1, containerWidth / previewWidthPx);
+        setScale(newScale);
+      };
+
+      updateScale();
+
+      const observer = new ResizeObserver(updateScale);
+      observer.observe(el);
+
+      return () => observer.disconnect();
+    }, []);
+
+    if (!template) return null;
+
+    const props = {
+      styles: template.styles,
+      personalDetails,
+      summary,
+      workExperience,
+      educationHistory,
+      skills,
     };
 
-    updateScale();
+    const previewHeightPx = (PREVIEW_HEIGHT_MM / 25.4) * 96;
 
-    const observer = new ResizeObserver(updateScale);
-    observer.observe(el);
-
-    return () => observer.disconnect();
-  }, []);
-
-  if (!template) return null;
-
-  const props = {
-    styles: template.styles,
-    personalDetails,
-    summary,
-    workExperience,
-    educationHistory,
-    skills,
-  };
-
-  const previewHeightPx = (PREVIEW_HEIGHT_MM / 25.4) * 96;
-
-  return (
-    <div
-      ref={containerRef}
-      className="mx-auto w-full overflow-hidden border border-black"
-      style={{ height: previewHeightPx * scale }}
-    >
+    return (
       <div
-        className="origin-top-left"
-        style={{
-          width: `${PREVIEW_WIDTH_MM}mm`,
-          height: `${PREVIEW_HEIGHT_MM}mm`,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-        }}
+        ref={containerRef}
+        className="mx-auto w-full overflow-hidden border border-black"
+        style={{ height: previewHeightPx * scale }}
       >
-        <div className="h-full w-full rounded-md border bg-white shadow-md">
-          <div className="h-full">
-            {template.styles.layout === "sidebar" ? (
-              <SidebarLayout {...props} />
-            ) : template.styles.layout === "banner" ? (
-              <BannerLayout {...props} />
-            ) : (
-              <SingleColumnLayout {...props} />
-            )}
+        <div
+          className="origin-top-left"
+          style={{
+            width: `${PREVIEW_WIDTH_MM}mm`,
+            height: `${PREVIEW_HEIGHT_MM}mm`,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          <div ref={exportRef} className="h-full w-full rounded-md border bg-white shadow-md">
+            <div className="h-full">
+              {template.styles.layout === "sidebar" ? (
+                <SidebarLayout {...props} />
+              ) : template.styles.layout === "banner" ? (
+                <BannerLayout {...props} />
+              ) : (
+                <SingleColumnLayout {...props} />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+);
+
+ResumePreview.displayName = "ResumePreview";
 
 export default ResumePreview;
