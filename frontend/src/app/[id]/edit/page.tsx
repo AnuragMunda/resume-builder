@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Editor from "@/components/editor/editor";
 import ResumePreview from "@/components/resumePreview";
+import TemplateSelector from "@/components/templateSelector";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useResumeStore } from "@/hooks/store";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Palette } from "lucide-react";
 
 const Edit = () => {
   const params = useParams();
@@ -17,6 +24,7 @@ const Edit = () => {
   const loadResume = useResumeStore((state) => state.loadResume);
   const templateId = useResumeStore((state) => state.templateId);
   const isSmallerDevice = useMediaQuery("(max-width: 1023px)");
+  const [showCustomiseSheet, setShowCustomiseSheet] = useState(false);
 
   useEffect(() => {
     if (resumeId) {
@@ -46,13 +54,15 @@ const Edit = () => {
           Back
         </Button>
       </div>
-      <Tabs defaultValue="edit" className="p-5 flex items-center">
+      <Tabs defaultValue="edit" className="px-5 flex items-center">
         <TabsList className="w-full min-h-10 md:max-w-[20%]">
           <TabsTrigger className="md:text-md cursor-pointer" value="edit">
             Edit
           </TabsTrigger>
           {isSmallerDevice ? (
-            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="preview" className="cursor-pointer">
+              Preview
+            </TabsTrigger>
           ) : (
             <TabsTrigger
               className="md:text-md cursor-pointer"
@@ -68,10 +78,41 @@ const Edit = () => {
         {isSmallerDevice ? (
           <TabsContent value="preview" className="w-full">
             {templateId && <ResumePreview templateId={templateId} />}
+            <div className="mt-4 flex justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 cursor-pointer"
+                onClick={() => setShowCustomiseSheet(true)}
+              >
+                <Palette className="size-4" />
+                Customise Template
+              </Button>
+            </div>
+            <Sheet
+              open={showCustomiseSheet}
+              onOpenChange={setShowCustomiseSheet}
+            >
+              <SheetContent side="bottom" className="h-[60vh]">
+                <SheetHeader>
+                  <SheetTitle>Choose Template</SheetTitle>
+                </SheetHeader>
+                <div className="flex-1 overflow-auto px-4 pb-4">
+                  <TemplateSelector variant="buttons" />
+                </div>
+              </SheetContent>
+            </Sheet>
           </TabsContent>
         ) : (
-          <TabsContent value="customise">
-            Customise resume templates
+          <TabsContent value="customise" className="w-full">
+            <div className="flex h-full gap-6">
+              <div className="w-[50%] p-8 overflow-auto">
+                <TemplateSelector variant="grid" />
+              </div>
+              <div className="flex-1 overflow-auto">
+                {templateId && <ResumePreview templateId={templateId} />}
+              </div>
+            </div>
           </TabsContent>
         )}
       </Tabs>

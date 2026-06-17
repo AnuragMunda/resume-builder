@@ -96,6 +96,15 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
     );
     const templateId = getLocalstorage<string>(`${resumeId}-template`);
 
+    const hydrateDates = <T extends { startDate?: any; endDate?: any }>(
+      items: T[],
+    ): T[] =>
+      items.map((item) => ({
+        ...item,
+        startDate: item.startDate ? new Date(item.startDate) : null,
+        endDate: item.endDate ? new Date(item.endDate) : null,
+      }));
+
     set({
       currentResumeId: resumeId,
       templateId: templateId ?? null,
@@ -110,10 +119,55 @@ export const useResumeStore = create<ResumeStore>((set, get) => ({
         country: "",
       },
       summary: summary ?? "",
-      workExperience: workExperience ?? [],
+      workExperience: workExperience ? hydrateDates(workExperience) : [],
       skills: skills ?? [],
-      educationHistory: educationHistory ?? [],
+      educationHistory: educationHistory ? hydrateDates(educationHistory) : [],
     });
+  },
+
+  deleteResume: (resumeId: string): void => {
+    const keys = [
+      `${resumeId}-template`,
+      `${resumeId}-info`,
+      `${resumeId}-summary`,
+      `${resumeId}-work`,
+      `${resumeId}-skills`,
+      `${resumeId}-education`,
+    ];
+
+    for (const key of keys) {
+      localStorage.removeItem(key);
+    }
+
+    const { currentResumeId } = get();
+    if (currentResumeId === resumeId) {
+      set({
+        currentResumeId: null,
+        templateId: null,
+        personalDetails: {
+          jobTarget: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          linkedin: "",
+          city: "",
+          state: "",
+          country: "",
+        },
+        summary: "",
+        workExperience: [],
+        skills: [],
+        educationHistory: [],
+      });
+    }
+  },
+
+  setTemplate: (templateId: string): void => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({ templateId });
+    setLocalStorage(`${currentResumeId}-template`, templateId);
   },
 
   setPersonalDetails: (details: PersonalDetails) => {

@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import TemplateCard from "@/components/templateCard";
+import RecentResumes from "@/components/recentResumes";
 import { useResumeStore } from "@/hooks/store";
 import { RESUME_TEMPLATES } from "@/utils/templates";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
   const router = useRouter();
@@ -25,15 +27,32 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {RESUME_TEMPLATES.map((template) => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            onSelect={() => handleSelectTemplate(template.id)}
-          />
-        ))}
-      </div>
+      <Tabs defaultValue="templates" className="w-full max-w-3xl">
+        <TabsList className="mb-8 w-full">
+          <TabsTrigger value="templates" className="flex-1 cursor-pointer">
+            Templates
+          </TabsTrigger>
+          <TabsTrigger value="recent" className="flex-1 cursor-pointer">
+            Recent Work
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="templates">
+          <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
+            {RESUME_TEMPLATES.map((template) => (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                onSelect={() => handleSelectTemplate(template.id)}
+              />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="recent">
+          <RecentResumes />
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }

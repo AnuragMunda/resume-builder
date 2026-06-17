@@ -18,6 +18,8 @@ export interface ResumeStore {
   selectedEdu: EducationHistory | null;
   createNewResume: (templateId: string) => string;
   loadResume: (resumeId: string) => void;
+  deleteResume: (resumeId: string) => void;
+  setTemplate: (templateId: string) => void;
   setPersonalDetails: (details: PersonalDetails) => void;
   setSummary: (summary: string) => void;
   setWorkExperience: (exp: WorkExperience[]) => void;

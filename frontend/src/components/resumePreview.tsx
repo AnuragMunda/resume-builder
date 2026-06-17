@@ -52,7 +52,7 @@ const SingleColumnLayout = ({
   educationHistory: EducationHistory[];
   skills: Skill[];
 }) => {
-  const hasName = personalDetails.firstName || personalDetails.lastName;
+  const hasName = personalDetails.firstName || personalDetails.lastName || personalDetails.jobTarget;
   const contactParts = [
     personalDetails.email,
     [personalDetails.city, personalDetails.state, personalDetails.country]
@@ -67,7 +67,7 @@ const SingleColumnLayout = ({
       {hasName && (
         <div>
           <div
-            className="text-2xl font-bold"
+            className="text-3xl font-bold"
             style={{
               fontFamily: styles.headingFont,
               color: styles.primaryColor,
@@ -77,12 +77,12 @@ const SingleColumnLayout = ({
             {personalDetails.lastName}
           </div>
           {personalDetails.jobTarget && (
-            <div className="mt-0.5 text-sm text-gray-500">
+            <div className="mt-0.5 text-lg text-gray-500">
               {personalDetails.jobTarget}
             </div>
           )}
           {contactParts.length > 0 && (
-            <div className="mt-1 text-xs text-gray-500">
+            <div className="mt-1 text-md text-gray-500">
               {contactParts.join(" | ")}
             </div>
           )}
@@ -108,7 +108,7 @@ const SingleColumnLayout = ({
               <div key={work.id}>
                 <div className="flex items-baseline justify-between">
                   <span
-                    className="text-sm font-semibold"
+                    className="text-base font-semibold"
                     style={{
                       color: styles.primaryColor,
                       fontFamily: styles.headingFont,
@@ -123,7 +123,7 @@ const SingleColumnLayout = ({
                     )}
                   </span>
                 </div>
-                <div className="text-[10px] text-gray-500">
+                <div className="text-md text-gray-500">
                   {work.startDate && dateFormatter.format(work.startDate)}
                   {work.startDate &&
                     (work.endDate || work.isWorking) &&
@@ -136,7 +136,7 @@ const SingleColumnLayout = ({
                   {work.location && ` | ${work.location}`}
                 </div>
                 {work.description && (
-                  <p className="mt-1 text-xs leading-relaxed text-gray-700">
+                  <p className="mt-2 text-base leading-relaxed text-gray-700">
                     {work.description}
                   </p>
                 )}
@@ -155,7 +155,7 @@ const SingleColumnLayout = ({
             {educationHistory.map((edu) => (
               <div key={edu.id}>
                 <div
-                  className="text-sm font-semibold"
+                  className="text-base font-semibold"
                   style={{
                     color: styles.primaryColor,
                     fontFamily: styles.headingFont,
@@ -169,14 +169,14 @@ const SingleColumnLayout = ({
                     </span>
                   )}
                 </div>
-                <div className="text-[10px] text-gray-500">
+                <div className="text-md text-gray-500">
                   {edu.startDate && dateFormatter.format(edu.startDate)}
                   {edu.startDate && edu.endDate && " - "}
                   {edu.endDate && dateFormatter.format(edu.endDate)}
                   {edu.location && ` | ${edu.location}`}
                 </div>
                 {edu.description && (
-                  <p className="mt-1 text-xs text-gray-700">
+                  <p className="mt-2 text-base text-gray-700">
                     {edu.description}
                   </p>
                 )}
@@ -195,7 +195,7 @@ const SingleColumnLayout = ({
             {skills.map((skill) => (
               <span
                 key={skill.id}
-                className="rounded border px-2 py-0.5 text-[10px] text-gray-700"
+                className="rounded border px-2 py-0.5 text-base text-gray-700"
                 style={{ borderColor: styles.primaryColor }}
               >
                 {skill.name}
@@ -460,14 +460,15 @@ const BannerLayout = ({
           </div>
         )}
         {personalDetails.jobTarget && (
-          <div className="mt-0.5 text-xs text-white/80">
+          <div className="mt-0.5 text-lg text-white/80">
             {personalDetails.jobTarget}
           </div>
         )}
         {hasContact && (
-          <div className="mt-1 text-[10px] text-white/70">
+          <div className="mt-1 text-md text-white/70">
             {[
               personalDetails.email,
+              personalDetails.linkedin,
               [
                 personalDetails.city,
                 personalDetails.state,
@@ -487,12 +488,12 @@ const BannerLayout = ({
         {summary && (
           <div className="flex gap-2">
             <div
-              className="w-[3px] shrink-0 rounded-full"
+              className="w-0.75 shrink-0 rounded-full"
               style={{ backgroundColor: styles.primaryColor }}
             />
             <div className="flex-1">
               <SectionHeading styles={styles}>Summary</SectionHeading>
-              <p className="text-xs leading-relaxed text-gray-700">
+              <p className="text-base leading-relaxed text-gray-700">
                 {summary}
               </p>
             </div>
@@ -503,7 +504,7 @@ const BannerLayout = ({
         {workExperience.length > 0 && (
           <div className="flex gap-2">
             <div
-              className="w-[3px] shrink-0 rounded-full"
+              className="w-0.75 shrink-0 rounded-full"
               style={{ backgroundColor: styles.primaryColor }}
             />
             <div className="flex-1">
@@ -512,7 +513,7 @@ const BannerLayout = ({
                 {workExperience.map((work) => (
                   <div key={work.id}>
                     <div
-                      className="text-sm font-semibold"
+                      className="text-base font-semibold"
                       style={{
                         color: styles.primaryColor,
                         fontFamily: styles.headingFont,
@@ -526,7 +527,7 @@ const BannerLayout = ({
                         </span>
                       )}
                     </div>
-                    <div className="text-[10px] text-gray-500">
+                    <div className="text-md text-gray-500">
                       {work.startDate &&
                         dateFormatter.format(work.startDate)}
                       {work.startDate &&
@@ -540,7 +541,7 @@ const BannerLayout = ({
                       {work.location && ` | ${work.location}`}
                     </div>
                     {work.description && (
-                      <p className="mt-1 text-xs leading-relaxed text-gray-700">
+                      <p className="mt-2 text-base leading-relaxed text-gray-700">
                         {work.description}
                       </p>
                     )}
@@ -555,7 +556,7 @@ const BannerLayout = ({
         {educationHistory.length > 0 && (
           <div className="flex gap-2">
             <div
-              className="w-[3px] shrink-0 rounded-full"
+              className="w-0.75 shrink-0 rounded-full"
               style={{ backgroundColor: styles.accentColor }}
             />
             <div className="flex-1">
@@ -568,7 +569,7 @@ const BannerLayout = ({
                 {educationHistory.map((edu) => (
                   <div key={edu.id}>
                     <div
-                      className="text-sm font-semibold"
+                      className="text-base font-semibold"
                       style={{
                         color: styles.accentColor,
                         fontFamily: styles.headingFont,
@@ -582,7 +583,7 @@ const BannerLayout = ({
                         </span>
                       )}
                     </div>
-                    <div className="text-[10px] text-gray-500">
+                    <div className="text-md text-gray-500">
                       {edu.startDate &&
                         dateFormatter.format(edu.startDate)}
                       {edu.startDate && edu.endDate && " - "}
@@ -590,7 +591,7 @@ const BannerLayout = ({
                       {edu.location && ` | ${edu.location}`}
                     </div>
                     {edu.description && (
-                      <p className="mt-1 text-xs text-gray-700">
+                      <p className="mt-2 text-base text-gray-700">
                         {edu.description}
                       </p>
                     )}
@@ -605,7 +606,7 @@ const BannerLayout = ({
         {skills.length > 0 && (
           <div className="flex gap-2">
             <div
-              className="w-[3px] shrink-0 rounded-full"
+              className="w-0.75 shrink-0 rounded-full"
               style={{ backgroundColor: styles.primaryColor }}
             />
             <div className="flex-1">
@@ -614,7 +615,7 @@ const BannerLayout = ({
                 {skills.map((skill) => (
                   <span
                     key={skill.id}
-                    className="rounded border px-2 py-0.5 text-[10px] text-gray-700"
+                    className="rounded border px-2 py-0.5 text-base text-gray-700"
                     style={{ borderColor: styles.primaryColor }}
                   >
                     {skill.name}
