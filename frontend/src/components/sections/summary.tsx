@@ -45,7 +45,7 @@ const Summary = () => {
             <Field>
               <Textarea
                 value={localSummary}
-                className="min-h-80 md:text-base"
+                className="min-h-80 md:text-base text-md"
                 placeholder="Type your message here."
                 onChange={(e) => {
                   setLocalSummary(e.target.value);
@@ -60,7 +60,7 @@ const Summary = () => {
           <Button
             size="lg"
             variant="outline"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
+            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
             onClick={() => setCurrentLevel("info")}
           >
             Back

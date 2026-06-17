@@ -134,7 +134,7 @@ const InputSheet = () => {
             <Input
               id="job-title"
               value={localExperience.jobTitle}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("jobTitle", e.target.value);
               }}
@@ -146,7 +146,7 @@ const InputSheet = () => {
             <Input
               id="employer"
               value={localExperience.employer}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("employer", e.target.value);
               }}
@@ -186,7 +186,7 @@ const InputSheet = () => {
             <Input
               id="location"
               value={localExperience.location}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("location", e.target.value);
               }}
@@ -196,7 +196,7 @@ const InputSheet = () => {
           <div className="flex flex-col gap-3 md:col-span-2">
             <Label htmlFor="textarea-message">Description</Label>
             <Textarea
-              className="min-h-40 md:text-base"
+              className="min-h-40 md:text-base text-md"
               id="description"
               value={localExperience.description}
               placeholder="e.g. Created and implemented lesson plans based on child-led interests and curiosities"
@@ -212,7 +212,7 @@ const InputSheet = () => {
             <Button
               size="lg"
               variant="default"
-              className="py-5 md:text-base md:px-4 md:py-6 md:max-w-[50%] md:self-center md;cursor-pointer"
+              className="py-5 md:text-base md:px-4 md:py-6 md:max-w-[50%] md:self-center md:cursor-pointer"
             >
               Done
             </Button>

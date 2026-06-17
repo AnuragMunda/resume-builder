@@ -49,20 +49,20 @@ const Experience = () => {
         <Field orientation="horizontal" className="w-full flex justify-between">
           <Button
             size="lg"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
-            variant="ghost"
+            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
+            variant="outline"
             onClick={() => setCurrentLevel("skills")}
           >
             Back
           </Button>
-          <Button
+          {/* <Button
             type="button"
             className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
             size="lg"
             // onClick={() => setCurrentLevel("skills")}
           >
             Done
-          </Button>
+          </Button> */}
         </Field>
       </FieldGroup>
     </div>

@@ -134,7 +134,7 @@ const EduInputSheet = () => {
             <Input
               id="school"
               value={localEd.school}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("school", e.target.value);
               }}
@@ -146,7 +146,7 @@ const EduInputSheet = () => {
             <Input
               id="degree"
               value={localEd.degree}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("degree", e.target.value);
               }}
@@ -171,7 +171,7 @@ const EduInputSheet = () => {
             <Input
               id="location"
               value={localEd.location}
-              className="md:text-base"
+              className="md:text-base text-md"
               onChange={(e) => {
                 handleChange("location", e.target.value);
               }}
@@ -181,7 +181,7 @@ const EduInputSheet = () => {
           <div className="flex flex-col gap-3 md:col-span-2">
             <Label htmlFor="textarea-message">Description</Label>
             <Textarea
-              className="min-h-40 md:text-base"
+              className="min-h-40 md:text-base text-md"
               id="description"
               value={localEd.description}
               placeholder="e.g. Graduated with High Honors."
@@ -197,7 +197,7 @@ const EduInputSheet = () => {
             <Button
               size="lg"
               variant="default"
-              className="py-5 md:text-base md:px-4 md:py-6 md:max-w-[50%] md:self-center md;cursor-pointer"
+              className="py-5 md:text-base md:px-4 md:py-6 md:max-w-[50%] md:self-center md:cursor-pointer"
             >
               Done
             </Button>

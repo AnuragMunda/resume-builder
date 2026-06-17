@@ -52,7 +52,7 @@ const Skills = () => {
             Choose 6 important skills that show you fit the position. Make sure
             they match the skills mentioned in the job listing.
           </FieldDescription>
-          <FieldGroup>
+          <FieldGroup className="md:grid md:grid-cols-2">
             {localSkills.length > 0 &&
               localSkills.map((skill, index) => (
                 <Field key={skill.id}>
@@ -62,6 +62,7 @@ const Skills = () => {
                   <div className="flex items-center gap-3">
                     <Input
                       id={`skill-${skill.id}`}
+                      value={skill.name}
                       className="md:text-base"
                       onChange={(e) => {
                         const updated = localSkills.map((s) =>
@@ -87,28 +88,27 @@ const Skills = () => {
                   </div>
                 </Field>
               ))}
-
-            <Field className="border w-[50%]">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-black md:cursor-pointer md:py-5"
-                onClick={() => {
-                  if (localSkills.length >= 6) return;
-                  setLocalSkills([...localSkills, { id: uuidv4(), name: "" }]);
-                }}
-              >
-                + Add more skill
-              </Button>
-            </Field>
           </FieldGroup>
+          <div className="w-full md:mt-5">
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-black w-[50%] md:cursor-pointer md:py-5"
+              onClick={() => {
+                if (localSkills.length >= 20) return;
+                setLocalSkills([...localSkills, { id: uuidv4(), name: "" }]);
+              }}
+            >
+              + Add more skill
+            </Button>
+          </div>
         </FieldSet>
         <FieldSeparator />
         <Field orientation="horizontal" className="w-full flex justify-between">
           <Button
             size="lg"
             variant="outline"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
+            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
             onClick={() => setCurrentLevel("work")}
           >
             Back

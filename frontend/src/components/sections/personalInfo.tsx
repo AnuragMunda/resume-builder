@@ -56,7 +56,7 @@ const PersonalInfo = () => {
                   </FieldLabel>
                   <Input
                     id={key}
-                    className="md:text-base"
+                    className="text-md md:text-base"
                     value={localDetails[key]}
                     placeholder={
                       key === "jobTarget"

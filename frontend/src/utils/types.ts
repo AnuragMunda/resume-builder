@@ -6,6 +6,8 @@ export interface LevelStore {
 }
 
 export interface ResumeStore {
+  currentResumeId: string | null;
+  templateId: string | null;
   personalDetails: PersonalDetails;
   summary: string;
   workExperience: WorkExperience[];
@@ -14,6 +16,8 @@ export interface ResumeStore {
   openSheet: boolean;
   selectedExp: WorkExperience | null;
   selectedEdu: EducationHistory | null;
+  createNewResume: (templateId: string) => string;
+  loadResume: (resumeId: string) => void;
   setPersonalDetails: (details: PersonalDetails) => void;
   setSummary: (summary: string) => void;
   setWorkExperience: (exp: WorkExperience[]) => void;
@@ -71,4 +75,18 @@ export interface EducationCardProp {
 export interface Skill {
   id: string;
   name: string;
+}
+
+export interface ResumeTemplate {
+  id: string;
+  name: string;
+  description: string;
+  styles: {
+    primaryColor: string;
+    accentColor: string;
+    headingFont: string;
+    bodyFont: string;
+    layout: "single-column" | "sidebar" | "banner";
+    gradient?: string;
+  };
 }

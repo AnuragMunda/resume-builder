@@ -50,7 +50,7 @@ const Experience = () => {
           <Button
             size="lg"
             variant="outline"
-            className="md:text-base md:px-4 md:py-5 md:cursor-pointer"
+            className="md:text-base md:px-5 md:py-5 md:cursor-pointer"
             onClick={() => setCurrentLevel("summary")}
           >
             Back

@@ -7,19 +7,27 @@ import {
 } from "./../utils/types";
 import { LevelType, LevelStore } from "@/utils/types";
 import { create } from "zustand";
+import { v4 as uuidv4 } from "uuid";
 
 //////////////////// HELPER ////////////////////
 
-const getLocalstorage = <T = any>(level: LevelType): T | null => {
-  if (typeof window === "undefined" || !window.localStorage) return null;
+const isServer = typeof window === "undefined" || !window.localStorage;
+
+const getLocalstorage = <T = any>(key: string): T | null => {
+  if (isServer) return null;
 
   try {
-    const localData = localStorage.getItem(level);
-    return localData ? (JSON.parse(localData) as T) : null;
+    const data = localStorage.getItem(key);
+    return data ? (JSON.parse(data) as T) : null;
   } catch (error) {
-    console.error("Failed to parse personal details", error);
+    console.error(`Failed to parse localStorage key "${key}":`, error);
     return null;
   }
+};
+
+const setLocalStorage = (key: string, value: any): void => {
+  if (isServer) return;
+  localStorage.setItem(key, JSON.stringify(value));
 };
 
 //////////////////// STORES ////////////////////
@@ -29,65 +37,138 @@ export const useLevelStore = create<LevelStore>((set) => ({
   setCurrentLevel: (level: LevelType) => set({ currentLevel: level }),
 }));
 
-export const useResumeStore = create<ResumeStore>((set) => {
-  const localInfo = getLocalstorage<PersonalDetails>("info");
-  const localSummary = getLocalstorage<string>("summary");
-  const localWork = getLocalstorage<WorkExperience[]>("work");
-  const localSkills = getLocalstorage<Skill[]>("skills");
-  const localEducation = getLocalstorage<EducationHistory[]>("education");
+export const useResumeStore = create<ResumeStore>((set, get) => ({
+  currentResumeId: null,
+  templateId: null,
+  personalDetails: {
+    jobTarget: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    linkedin: "",
+    city: "",
+    state: "",
+    country: "",
+  },
+  summary: "",
+  workExperience: [],
+  skills: [],
+  educationHistory: [],
+  openSheet: false,
+  selectedExp: null,
+  selectedEdu: null,
 
-  return {
-    personalDetails: {
-      jobTarget: localInfo?.jobTarget ?? "",
-      firstName: localInfo?.firstName ?? "",
-      lastName: localInfo?.lastName ?? "",
-      email: localInfo?.email ?? "",
-      linkedin: localInfo?.linkedin,
-      city: localInfo?.city,
-      state: localInfo?.state,
-      country: localInfo?.country,
-    },
-    summary: localSummary ?? "",
-    workExperience: localWork ?? [],
-    skills: localSkills ?? [],
-    educationHistory: localEducation ?? [],
-    openSheet: false,
-    selectedExp: null,
-    selectedEdu: null,
-    setPersonalDetails: (details: PersonalDetails) => {
-      set({
-        personalDetails: {
-          jobTarget: details.jobTarget,
-          firstName: details.firstName,
-          lastName: details.lastName,
-          email: details.email,
-          linkedin: details.linkedin,
-          city: details.city,
-          state: details.state,
-          country: details.country,
-        },
-      });
+  createNewResume: (templateId: string): string => {
+    const resumeId = uuidv4();
+    setLocalStorage(`${resumeId}-template`, templateId);
+    set({
+      currentResumeId: resumeId,
+      templateId,
+      personalDetails: {
+        jobTarget: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        linkedin: "",
+        city: "",
+        state: "",
+        country: "",
+      },
+      summary: "",
+      workExperience: [],
+      skills: [],
+      educationHistory: [],
+    });
+    return resumeId;
+  },
 
-      localStorage.setItem("info", JSON.stringify(details));
-    },
-    setSummary: (summary: string) => {
-      set({ summary });
-      localStorage.setItem("summary", JSON.stringify(summary));
-    },
-    setWorkExperience: (exp: WorkExperience[]) => {
-      set({ workExperience: exp });
-      localStorage.setItem("work", JSON.stringify(exp));
-    },
-    setSkills: (skills: Skill[]) => {
-      set({ skills });
-      localStorage.setItem("skills", JSON.stringify(skills));
-    },
-    setEducationHistory: (ed: EducationHistory[]) => {
-      set({ educationHistory: ed });
-      localStorage.setItem("education", JSON.stringify(ed));
-    },
-    setOpenSheet: (isOpen: boolean) => set({ openSheet: isOpen }),
-    setSelectedExp: (exp: WorkExperience | null) => set({ selectedExp: exp }),
-    setSelectedEdu: (ed: EducationHistory | null) => set({ selectedEdu: ed }),
-  };
-});
+  loadResume: (resumeId: string): void => {
+    const personalDetails = getLocalstorage<PersonalDetails>(
+      `${resumeId}-info`,
+    );
+    const summary = getLocalstorage<string>(`${resumeId}-summary`);
+    const workExperience = getLocalstorage<WorkExperience[]>(
+      `${resumeId}-work`,
+    );
+    const skills = getLocalstorage<Skill[]>(`${resumeId}-skills`);
+    const educationHistory = getLocalstorage<EducationHistory[]>(
+      `${resumeId}-education`,
+    );
+    const templateId = getLocalstorage<string>(`${resumeId}-template`);
+
+    set({
+      currentResumeId: resumeId,
+      templateId: templateId ?? null,
+      personalDetails: personalDetails ?? {
+        jobTarget: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        linkedin: "",
+        city: "",
+        state: "",
+        country: "",
+      },
+      summary: summary ?? "",
+      workExperience: workExperience ?? [],
+      skills: skills ?? [],
+      educationHistory: educationHistory ?? [],
+    });
+  },
+
+  setPersonalDetails: (details: PersonalDetails) => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({
+      personalDetails: {
+        jobTarget: details.jobTarget,
+        firstName: details.firstName,
+        lastName: details.lastName,
+        email: details.email,
+        linkedin: details.linkedin,
+        city: details.city,
+        state: details.state,
+        country: details.country,
+      },
+    });
+
+    setLocalStorage(`${currentResumeId}-info`, details);
+  },
+
+  setSummary: (summary: string) => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({ summary });
+    setLocalStorage(`${currentResumeId}-summary`, summary);
+  },
+
+  setWorkExperience: (exp: WorkExperience[]) => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({ workExperience: exp });
+    setLocalStorage(`${currentResumeId}-work`, exp);
+  },
+
+  setSkills: (skills: Skill[]) => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({ skills });
+    setLocalStorage(`${currentResumeId}-skills`, skills);
+  },
+
+  setEducationHistory: (ed: EducationHistory[]) => {
+    const { currentResumeId } = get();
+    if (!currentResumeId) return;
+
+    set({ educationHistory: ed });
+    setLocalStorage(`${currentResumeId}-education`, ed);
+  },
+
+  setOpenSheet: (isOpen: boolean) => set({ openSheet: isOpen }),
+  setSelectedExp: (exp: WorkExperience | null) => set({ selectedExp: exp }),
+  setSelectedEdu: (ed: EducationHistory | null) => set({ selectedEdu: ed }),
+}));
