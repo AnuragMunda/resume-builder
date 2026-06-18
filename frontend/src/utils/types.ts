@@ -79,6 +79,34 @@ export interface Skill {
   name: string;
 }
 
+export interface SectionCritique {
+  score: number;
+  feedback: string;
+  suggestions: string[];
+}
+
+export interface OverallCritique {
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+}
+
+export interface ResumeCritique {
+  overall: OverallCritique;
+  sections: {
+    personalDetails: SectionCritique;
+    summary: SectionCritique;
+    workExperience: SectionCritique;
+    educationHistory: SectionCritique;
+    skills: SectionCritique;
+  };
+}
+
+export interface CritiqueResponse {
+  critique: ResumeCritique;
+}
+
 export interface ResumeTemplate {
   id: string;
   name: string;
